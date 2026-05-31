@@ -28,4 +28,5 @@ urlpatterns = [
     path("dashboard/", views.index),
     path("estoque/", views.index),
     path("saidas/", views.index),
+    path('cadastro/', views.cadastro_view, name='cadastro'),
 ]

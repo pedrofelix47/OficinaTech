@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Usuário</title>
+    </head>
+<body>
+
+    <div class="cadastro-container">
+        <h2>Criar Nova Conta</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'cadastro' %}">
+            {% csrf_token %} <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" name="nome" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" name="email" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" name="password" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>Confirmar Senha</label>
+                <input type="password" name="password_confirm" required class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Criar Conta</button>
+        </form>
+
+        <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login aqui</a></p>
+    </div>
+
+</body>
+</html>

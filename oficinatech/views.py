@@ -3,11 +3,47 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from oficinatech01.models import Funcionario
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.contrib.auth.models import User
+def cadastro_view(request):
+    if request.method == 'POST':
+        # 1. Capturar os dados do formulário HTML
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        senha = request.POST.get('password')
+        confirmar_senha = request.POST.get('password_confirm')
+
+        # 2. Validações básicas
+        if senha != confirmar_senha:
+            messages.error(request, "As senhas não coincidem.")
+            return render(request, 'cadastro.html')
+
+        # Verificar se o e-mail já está a ser utilizado
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Este e-mail já está registado no sistema.")
+            return render(request, 'cadastro.html')
+
+        try:
+            # 3. Criar o utilizador padrão do Django (usamos o email como username)
+            user = User.objects.create_user(username=email, email=email, password=senha)
+            
+            # 4. Criar o Funcionário na sua tabela personalizada, vinculando ao utilizador acima
+            Funcionario.objects.create(
+                user=user,
+                nome_funcionario=nome,
+                email_funcionario=email,
+                cargo_funcionario="Mecânico",  # Defina um cargo padrão ou remova se preferir
+                ativo=True
+            )
+
+            # Envia uma mensagem de sucesso e manda o utilizador para a tela de login
+            messages.success(request, "Conta criada com sucesso! Faça o seu login.")
+            return redirect('login')
+
+        except Exception as e:
+            messages.error(request, f"Erro ao criar a conta: {str(e)}")
+            
+    return render(request, 'cadastro.html')
 
 def login_view(request):
     if request.method == 'POST':
