@@ -1,0 +1,179 @@
+/* Custom CSS para Oficinas Tech */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: #1A1A1A;
+}
+
+.bg-light-custom {
+    background-color: #F8F9FA;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid #E5E7EB;
+}
+
+.text-primary-custom {
+    color: #1754F8; /* Azul mais próximo do design original */
+}
+
+.text-muted-custom {
+    color: #6C757D;
+    font-size: 0.95rem;
+}
+
+.form-label {
+    font-size: 0.95rem;
+    color: #212529;
+}
+
+.custom-input {
+    background-color: #F3F4F6;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+}
+
+.custom-input:focus {
+    background-color: #FFFFFF;
+    border-color: #0D6EFD;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.custom-input::placeholder {
+    color: #9CA3AF;
+}
+
+.btn-primary-custom {
+    background-color: #1754F8;
+    border-color: #1754F8;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary-custom:hover, .btn-primary-custom:focus {
+    background-color: #1243C6;
+    border-color: #1243C6;
+    color: white;
+}
+
+/* Dashboard Styles */
+.fs-7 {
+    font-size: 0.875rem;
+}
+
+.sidebar {
+    width: 260px;
+    position: fixed;
+    height: 100vh;
+}
+
+.main-content {
+    margin-left: 260px; /* Offset for fixed sidebar */
+}
+
+.nav-link-custom {
+    color: #4B5563;
+    transition: all 0.2s ease;
+}
+
+.nav-link-custom:hover {
+    background-color: #F3F4F6;
+    color: #111827;
+}
+
+.nav-link-active {
+    background-color: #EFF6FF;
+    color: #1754F8;
+}
+
+.dashboard-card {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #F3F4F6;
+}
+
+.bg-primary-subtle {
+    background-color: #DBEAFE !important;
+}
+
+.bg-success-subtle {
+    background-color: #D1FAE5 !important;
+}
+
+.text-success {
+    color: #059669 !important;
+}
+
+.bg-danger-subtle {
+    background-color: #FEE2E2 !important;
+}
+
+.text-danger {
+    color: #DC2626 !important;
+}
+
+.bg-danger-subtle-custom {
+    background-color: #FEF2F2;
+}
+
+.border-start-danger {
+    border-left: 4px solid #DC2626 !important;
+}
+
+.alert-item {
+    border: 1px solid transparent;
+}
+
+.atividade-item {
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease;
+}
+
+.bg-light-custom {
+    background-color: #F8F9FA !important;
+}
+
+/* Tabela de Estoque Styles */
+.table-custom th {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #111827 !important;
+}
+
+.table-custom td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.table-custom > :not(caption) > * > * {
+    background-color: transparent; /* Override bootstrap */
+}
+
+.table-hover tbody tr:hover td {
+    background-color: #F9FAFB;
+}
+
+.badge-success {
+    background-color: #D1FAE5;
+}
+
+.text-success-custom {
+    color: #059669;
+}
+
+.badge-danger {
+    background-color: #FEE2E2;
+}
+
+.text-danger-custom {
+    color: #DC2626;
+}
+
+/* Remove border on last row */
+.table-custom tbody tr:last-child td {
+    border-bottom: 0;
+}
