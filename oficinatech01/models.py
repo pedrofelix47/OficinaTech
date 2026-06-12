@@ -20,6 +20,7 @@ class Funcionario(models.Model):
 class Fornecedor(models.Model):
     id_fornecedor = models.AutoField(primary_key=True)
     nome_fornecedor = models.CharField(max_length=255)
+    cnpj_fornecedor = models.CharField(max_length=20, blank=True, null=True)
     email_fornecedor = models.EmailField(blank=True, null=True)
     telefone_fornecedor = models.CharField(max_length=20, blank=True, null=True)
     ativo = models.BooleanField(default=True)

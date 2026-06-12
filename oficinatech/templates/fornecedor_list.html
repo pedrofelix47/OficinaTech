@@ -1,0 +1,38 @@
+<h2>Lista de Fornecedores</h2>
+<a href="{% url 'fornecedor_create' %}" class="btn btn-primary">Novo Fornecedor</a>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fornecedor in fornecedores %}
+        <tr>
+            <td>{{ fornecedor.id_fornecedor }}</td>
+            <td>{{ fornecedor.nome_fornecedor }}</td>
+            <td>{{ fornecedor.email_fornecedor }}</td>
+            <td>
+                {% if fornecedor.ativo %}
+                    Ativo
+                {% else %}
+                    Inativo (desde {{ fornecedor.data_inativacao|date:"d/m/Y" }})
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'fornecedor_update' fornecedor.id_fornecedor %}">Editar</a> | 
+                <a href="{% url 'fornecedor_delete' fornecedor.id_fornecedor %}">Inativar</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum fornecedor cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

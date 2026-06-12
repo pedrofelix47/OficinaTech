@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-outline-secondary" onclick="history.back()">Voltar</button>
+      <h2 class="mb-0">Peças</h2>
+    </div>
+    <div>
+      <button id="btnOpenPecaModal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pecaModal">Adicionar Peça</button>
+    </div>
+  </div>
+
+  <!-- Single modal for add/edit -->
+  <div class="modal fade" id="pecaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="pecaForm">
+          {% csrf_token %}
+          <input type="hidden" name="peca_pk" id="peca_pk" value="">
+          <div class="modal-header">
+            <h5 class="modal-title" id="pecaModalTitle">Adicionar Peça</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input id="nome_peca" name="nome_peca" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Descrição</label>
+              <textarea id="descricao_peca" name="descricao_peca" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="mb-3 row">
+              <div class="col-md-6">
+                <label class="form-label">Custo</label>
+                <input id="custo_peca" name="custo_peca" class="form-control" placeholder="0.00">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Quantidade</label>
+                <input id="quant_peca" name="quant_peca" type="number" class="form-control" value="0">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Alerta</label>
+                <input id="alerta_quant" name="alerta_quant" type="number" class="form-control" value="5">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Fornecedores (Ctrl+clique para múltipla seleção)</label>
+              <select id="fornecedores_select" name="fornecedores" class="form-select" multiple>
+                {% for f in fornecedores %}
+                  <option value="{{ f.pk }}">{{ f.nome_fornecedor }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div id="pecaFormError" class="text-danger small" style="display:none;"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="pecaFormSave">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <table class="table" id="pecasTable">
+    <thead>
+      <tr><th>#</th><th>Nome</th><th>Custo</th><th>Quantidade</th><th>Alerta</th><th>Fornecedores</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      {% for p in pecas %}
+      <tr data-pk="{{ p.pk }}" data-nome="{{ p.nome_peca|escapejs }}" data-descricao="{{ p.descricao_peca|default_if_none:''|escapejs }}" data-custo="{{ p.custo_peca }}" data-quant="{{ p.quant_peca }}" data-alerta="{{ p.alerta_quant }}" data-fornecedores-ids="{% for f in p.fornecedores.all %}{{ f.pk }}{% if not forloop.last %},{% endif %}{% endfor %}" data-fornecedores-names="{% for f in p.fornecedores.all %}{{ f.nome_fornecedor|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+        <td class="peca-pk">{{ p.pk }}</td>
+        <td class="peca-nome">{{ p.nome_peca }}</td>
+        <td class="peca-custo">{{ p.custo_peca }}</td>
+        <td class="peca-quant">{{ p.quant_peca }}</td>
+        <td class="peca-alerta">{{ p.alerta_quant }}</td>
+        <td class="peca-fornecedores">{% for f in p.fornecedores.all %}{{ f.nome_fornecedor }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}</td>
+        <td>
+          <button type="button" class="btn btn-sm btn-outline-primary js-edit-peca">Editar</button>
+          <button type="button" class="btn btn-sm btn-outline-danger js-delete-peca">Excluir</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+{% endblock %}

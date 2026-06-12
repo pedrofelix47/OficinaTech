@@ -1,4 +1,4 @@
-/* Custom CSS para Oficinas Tech */
+/* Custom CSS para OficinaTech */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 body {
@@ -29,6 +29,11 @@ body {
 .form-label {
     font-size: 0.95rem;
     color: #212529;
+}
+
+.dark-mode .form-label {
+    font-size: 0.95rem;
+    color: #fff;
 }
 
 .custom-input {
@@ -66,15 +71,9 @@ body {
     font-size: 0.875rem;
 }
 
-.sidebar {
-    width: 260px;
-    position: fixed;
-    height: 100vh;
-}
+.sidebar { display: none; }
 
-.main-content {
-    margin-left: 260px; /* Offset for fixed sidebar */
-}
+.main-content { margin-left: 0; }
 
 .nav-link-custom {
     color: #4B5563;
@@ -113,7 +112,7 @@ body {
 }
 
 .text-danger {
-    color: #DC2626 !important;
+    color: #B91C1C !important;
 }
 
 .bg-danger-subtle-custom {
@@ -121,7 +120,7 @@ body {
 }
 
 .border-start-danger {
-    border-left: 4px solid #DC2626 !important;
+    border-left: 4px solid #B91C1C !important;
 }
 
 .alert-item {
@@ -134,7 +133,12 @@ body {
 }
 
 .bg-light-custom {
-    background-color: #F8F9FA !important;
+    background-color: #f5f5f5;
+    transition: background-color 0.3s;
+}
+
+.dark-mode .bg-light-custom {
+    background-color: #111827;
 }
 
 /* Tabela de Estoque Styles */
@@ -170,10 +174,199 @@ body {
 }
 
 .text-danger-custom {
-    color: #DC2626;
+    color: #B91C1C;
 }
 
 /* Remove border on last row */
 .table-custom tbody tr:last-child td {
     border-bottom: 0;
 }
+
+/* Tag / Chip styles for permissions/groups */
+.tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background-color: #EFF6FF;
+    color: #0B2545;
+    border: 1px solid #D6E4FF;
+    font-size: 0.875rem;
+}
+.chip .chip-label { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip .chip-remove {
+    background: transparent;
+    border: none;
+    color: #1754F8;
+    font-weight: 600;
+    cursor: pointer;
+}
+.tag-input {
+    position: relative;
+}
+.tag-search {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #E5E7EB;
+}
+.suggestion-dropdown {
+    position: absolute;
+    z-index: 2100;
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    width: 100%;
+    max-height: 220px;
+    overflow: auto;
+    margin-top: 6px;
+}
+.suggestion-item { padding: 8px 10px; cursor: pointer; }
+.suggestion-item:hover { background: #F3F4F6; }
+
+/* Modal tweaks */
+.modal .modal-title { font-weight: 600; }
+.modal .modal-body { font-size: 0.95rem; }
+.modal .form-label { font-size: 0.9rem; }
+
+/* Footer */
+.site-footer {
+    background-color: var(--header-footer);
+    border-top: 1px solid #E5E7EB;
+    padding: 12px 0;
+    color: #ffffff;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+.site-footer a { color: inherit; text-decoration: none; }
+
+/* Navbar tweaks */
+.navbar {
+    padding: 0.6rem 1rem;
+    background: var(--header-footer) !important;
+}
+.navbar .navbar-brand { font-weight: 700; color: inherit; }
+.navbar .nav-link { color: #ffffff; margin-right: 0.25rem; padding: 0.5rem 0.75rem; border-radius: 8px; }
+.navbar .nav-link:hover { background: rgba(255,255,255,0.1); color: #ffffff; }
+.navbar .nav-link-active { background: rgba(255,255,255,0.2); color: #ffffff !important; font-weight: 600; }
+
+/* Content container limits for better readability */
+.content-wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+/* Card elevation */
+.dashboard-card { box-shadow: 0 6px 20px rgba(16,24,40,0.06); border-radius: 12px; }
+
+/* Buttons */
+.btn-primary-custom { border-radius: 10px; padding: 0.6rem 1rem; }
+.btn-outline-primary { border-radius: 10px; }
+
+/* Theme variables and dark-mode support */
+:root{
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --text: #111827;
+    --muted: #6C757D;
+    --primary: #1754F8;
+    --accent: #1754F8;
+    --header-footer: #B91C1C; /* red escuro solicitado */
+    --success: #10B981; /* verde vivo solicitado */
+}
+.dark-mode{
+    --bg: #0B1020;
+    --surface: #0F1724;
+    --text: #FFFFFF;
+    --muted: #9CA3AF;
+    --primary: #60A5FA;
+    --accent: #60A5FA;
+    --header-footer: #B91C1C;
+    --success: #10B981;
+}
+
+body { background: var(--bg); color: var(--text); }
+
+/* Override inputs/buttons */
+.custom-input { background-color: var(--surface); border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; }
+.custom-input:focus { box-shadow: 0 6px 20px rgba(16,24,40,0.06); border-color: var(--accent); }
+
+.btn-primary-custom { background-color: var(--primary); border-color: var(--primary); color: white; }
+.btn-login-green { background-color: var(--success); border-color: var(--success); color: white; }
+
+/* Navbar header/footer styles */
+.navbar { background: var(--header-footer); }
+.navbar .navbar-brand { font-weight: 800; display: inline-flex; align-items: center; gap:8px; }
+.navbar .navbar-brand .brand-name { color: #000; font-weight:800; }
+.navbar .navbar-brand .bi { color: #000; }
+.dark-mode .navbar .navbar-brand .brand-name { color: #fff; }
+.dark-mode .navbar .navbar-brand .bi { color: #fff; }
+
+/* Admin link label style */
+.navbar .btn-admin { border-radius: 10px; }
+
+/* separators */
+.navbar-nav .nav-item + .nav-item .nav-link::before { content: "|"; margin: 0 0.6rem; color: rgba(255,255,255,0.7); }
+
+/* Offcanvas user panel */
+.offcanvas-user .offcanvas-body { background: var(--surface); color: var(--text); }
+.user-info { padding: 16px; }
+.btn-logout { background: #B91C1C; color: #fff; border-radius: 8px; border: none; }
+
+/* Login card adjustments */
+.login-card { max-width: 540px; border: none; background: transparent; }
+.login-card .card-inner { background: var(--surface); border-radius: 12px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(2,6,23,0.08); }
+.login-card .card-brand { background: var(--header-footer); padding: 20px; }
+.login-card .card-brand .brand-name { font-size: 1.6rem; font-weight: 800; color: #000; }
+.dark-mode .login-card .card-brand .brand-name { color: #fff; }
+.login-card .card-body { padding: 28px; }
+
+/* Footer red with white text */
+.site-footer { background: var(--header-footer); color: #fff; }
+
+/* Card highlights */
+.dashboard-card { padding: 20px; }
+
+/* Layout and overrides added for header/footer and theme */
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; min-height: 100vh; }
+main { flex: 1 0 auto; }
+
+/* Ensure body uses theme variables */
+body { background: var(--bg); color: var(--text); }
+
+/* Navbar brand always white */
+.navbar .navbar-brand .brand-name { color: #fff !important; }
+.navbar .navbar-brand .bi { color: #fff !important; }
+
+/* Login card brand white */
+.login-card .card-brand .brand-name { color: #fff !important; }
+
+/* Footer spacing */
+.site-footer { padding-top: 18px; padding-bottom: 18px; margin-top: 24px; }
+
+/* Admin button solid */
+.btn-admin {
+    background: #ffffff;
+    color: var(--header-footer);
+    border: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-admin:hover {
+    background: #ffffff;
+    color: var(--header-footer);
+}
+/* Theme toggle styles */
+.theme-toggle { width: 42px; height: 42px; border-radius: 999px; display: none !important; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; border: none; background: rgba(255,255,255,0.9); box-shadow: 0 2px 8px rgba(2,6,23,0.08); }
+.dark-mode .theme-toggle { background: rgba(255,255,255,0.06); color: #fff; }
+.theme-toggle .theme-icon { line-height:1; }
+
+/* Login theme control */
+.login-theme { position: absolute; right: 18px; top: 18px; display:flex; gap:8px; align-items:center; }
+.login-theme .mode-label { display: none !important; font-size:0.85rem; color:var(--muted); background:transparent; }

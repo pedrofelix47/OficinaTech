@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2>Editar Peça</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Nome</label>
+      <input name="nome_peca" value="{{ peca.nome_peca }}" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Descrição</label>
+      <textarea name="descricao_peca" class="form-control" rows="3">{{ peca.descricao_peca }}</textarea>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Custo</label>
+        <input name="custo_peca" value="{{ peca.custo_peca }}" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Quantidade</label>
+        <input name="quant_peca" type="number" value="{{ peca.quant_peca }}" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Alerta</label>
+        <input name="alerta_quant" type="number" value="{{ peca.alerta_quant }}" class="form-control">
+      </div>
+    </div>
+    <div class="mb-3 mt-3">
+      <label class="form-label">Fornecedores</label>
+      <select name="fornecedores" class="form-select" multiple>
+        {% for f in fornecedores %}
+          <option value="{{ f.pk }}" {% if f in peca.fornecedores.all %}selected{% endif %}>{{ f.nome_fornecedor }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Salvar</button>
+      <a href="{% url 'admin_pecas' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

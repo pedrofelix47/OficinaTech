@@ -1,0 +1,10 @@
+<h2>Confirmar Inativação</h2>
+
+<p>Tem certeza que deseja inativar o fornecedor <strong>{{ fornecedor.nome_fornecedor }}</strong>?</p>
+<p>Esta ação não apagará os registros anteriores, mas impedirá novas compras com este fornecedor.</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" style="color: red;">Sim, Inativar</button>
+    <a href="{% url 'fornecedor_list' %}">Cancelar</a>
+</form>

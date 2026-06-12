@@ -1,50 +1,127 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oficinas Tech - Login</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <!-- <link rel="stylesheet" href="static/style.css"> -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>⚙️ OficinaTech - Login</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom CSS -->
+        <!-- <link rel="stylesheet" href="static/style.css"> -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
 </head>
 <body>
 
-    <div class="d-flex align-items-center justify-content-center min-vh-100 bg-light-custom">
-        <div class="login-card p-5 bg-white rounded-3 shadow-sm mx-3">
-            <div class="text-center mb-4 pb-2">
-                <h2 class="text-primary-custom fw-medium mb-2 fs-3">Oficinas Tech</h2>
-                <p class="text-muted-custom mb-0">Sistema de Gestão de Estoque</p>
-                {{dev}}
-            </div>
-
-            <form method="POST" action="{% url 'login' %}" id="loginForm">
-                {% csrf_token %} {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-danger">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}    
-                
-                <div class="mb-3">
-                    <label for="emailInput" class="form-label fw-medium">E-mail</label>
-                    <input type="email" class="form-control custom-input" id="emailInput" placeholder="seu@email.com" required>
-                </div>
-                <div class="mb-4">
-                    <label for="passwordInput" class="form-label fw-medium">Senha</label>
-                    <input type="password" class="form-control custom-input" id="passwordInput" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-primary-custom w-100 py-2 rounded-3 fw-medium">Entrar</button>
-            </form>
+        <div class="login-theme">
+                <div class="mode-label">Tema</div>
+                <button id="themeToggle" class="theme-toggle" title="Alternar tema">☾</button>
         </div>
 
-    </div>
+                                <div class="d-flex align-items-center justify-content-center min-vh-100 bg-light-custom">
+                                                                <div class="login-card mx-3">
+                                                                                                <div class="card-inner">
+                                                                                                        <div class="card-brand">
+                                                                                                                <div class="container d-flex flex-column align-items-start">
+                                                                                                                        <div class="brand-header d-flex align-items-center gap-2">
+                                                                                                                                <i class="bi bi-gear-fill" style="font-size:1.25rem"></i>
+                                                                                                                                <span class="brand-name">OficinaTech</span>
+                                                                                                                        </div>
+                                                                                                                        <div class="mt-2 text-white small">Sistema de Gestão de Estoque</div>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                        <div class="card-body">
+                                                                                                                <form method="POST" action="{% url 'login' %}" id="loginForm">
+                                {% csrf_token %}
+                                {% if messages %}
+                                        {% for message in messages %}
+                                                {% if message.tags == 'error' or message.tags == 'warning' %}
+                                                        <div class="alert alert-danger">{{ message }}</div>
+                                                {% endif %}
+                                        {% endfor %}
+                                {% endif %}
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{% static 'js/script.js' %}"></script>
+                                <div class="mb-3">
+                                        <label for="emailInput" class="form-label fw-medium">E-mail</label>
+                                        <input type="email" class="form-control custom-input" id="emailInput" name="email" placeholder="seu@email.com" required>
+                                </div>
+                                <div class="mb-4">
+                                        <label for="passwordInput" class="form-label fw-medium">Senha</label>
+                                        <input type="password" class="form-control custom-input" id="passwordInput" name="password" placeholder="••••••••" required>
+                                </div>
+                                                                                                                                <button type="submit" class="btn btn-login-green w-100 py-3 rounded-3 fw-medium">Entrar</button>
+                        </form>
+                                                                                                                <p class="text-center mt-3 mb-0 text-muted-custom">Ainda não tem conta? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Criar conta</a></p>
+                                                                                                        </div>
+                                                                                                </div>
+                                                                </div>
+                </div>
+
+                <!-- Modal de Cadastro -->
+                <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                                <div class="modal-content">
+                                        <form method="POST" action="{% url 'cadastro' %}">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                        <h5 class="modal-title">Criar Conta</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                        <div class="mb-3">
+                                                                <label class="form-label">Nome completo</label>
+                                                                <input name="nome" class="form-control" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                                <label class="form-label">E-mail</label>
+                                                                <input type="email" name="email" class="form-control" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                                <label class="form-label">Senha</label>
+                                                                <input type="password" name="password" class="form-control" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                                <label class="form-label">Confirmar senha</label>
+                                                                <input type="password" name="password_confirm" class="form-control" required>
+                                                        </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary">Criar conta</button>
+                                                </div>
+                                        </form>
+                                </div>
+                        </div>
+                </div>
+                </div>
+
+        </div>
+
+        <!-- Bootstrap Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Custom JS -->
+        <script src="{% static 'js/script.js' %}"></script>
+                <script>
+                        (function(){
+                                const btn = document.getElementById('themeToggle');
+                                const moon = '☾';
+                                const sun = '𖤓';
+                                const current = localStorage.getItem('theme');
+                                if(current === 'dark') document.documentElement.classList.add('dark-mode');
+                                function updateBtn(){
+                                        if(!btn) return;
+                                        const isDark = document.documentElement.classList.contains('dark-mode');
+                                        btn.innerHTML = `<span class="theme-icon">${isDark ? sun : moon}</span>`;
+                                }
+                                updateBtn();
+                                if(btn) btn.addEventListener('click', function(){
+                                        document.documentElement.classList.toggle('dark-mode');
+                                        const isDark = document.documentElement.classList.contains('dark-mode');
+                                        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                                        updateBtn();
+                                });
+                        })();
+                </script>
 </body>
 </html>
+body

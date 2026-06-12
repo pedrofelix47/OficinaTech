@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2>Editar Fornecedor</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Nome</label>
+      <input name="nome_fornecedor" value="{{ fornecedor.nome_fornecedor }}" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input name="email_fornecedor" value="{{ fornecedor.email_fornecedor }}" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Telefone</label>
+      <input name="telefone_fornecedor" value="{{ fornecedor.telefone_fornecedor }}" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">CNPJ</label>
+      <input name="cnpj_fornecedor" value="{{ fornecedor.cnpj_fornecedor }}" class="form-control">
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Salvar</button>
+      <a href="{% url 'admin_fornecedores' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

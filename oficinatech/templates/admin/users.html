@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <script>
+    window.ALL_PERMISSIONS = {{ all_permissions_json|safe }};
+    window.ALL_GROUPS = {{ all_groups_json|safe }};
+  </script>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-outline-secondary" onclick="history.back()">Voltar</button>
+      <h2 class="mb-0">Usuários</h2>
+    </div>
+    <div>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">Novo Usuário</button>
+    </div>
+  </div>
+  <table class="table">
+    <thead><tr><th>#</th><th>Nome</th><th>Cargo</th><th>Username</th><th>Email</th><th>Ações</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{% if u.funcionario %}{{ u.funcionario.nome_funcionario }}{% else %}{{ u.first_name }}{% endif %}</td>
+        <td>{% if u.funcionario %}{{ u.funcionario.cargo_funcionario }}{% else %}-{% endif %}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editUserModal-{{ u.id }}">Editar</button>
+          <a href="{% url 'admin_user_delete' u.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Excluir usuário?')">Excluir</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Create User Modal -->
+  <div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'admin_user_create' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">Novo Usuário</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Nome</label>
+                <input name="first_name" class="form-control" placeholder="Nome completo">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Username</label>
+                <input name="username" class="form-control" placeholder="username ou email" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">E-mail</label>
+                <input name="email" type="email" class="form-control" placeholder="email@exemplo.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Senha</label>
+                <input name="password1" type="password" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Confirmar senha</label>
+                <input name="password2" type="password" class="form-control" required>
+              </div>
+              <div class="col-12">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" name="create_funcionario" id="create_funcionario">
+                  <label class="form-check-label" for="create_funcionario">Criar também como Funcionário</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Cargo (para Funcionário)</label>
+                <input name="cargo" class="form-control" placeholder="Ex: Mecânico">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Grupos</label>
+                <div class="tag-input-root" data-input-name="groups" data-list-key="groups">
+                  <div class="tag-chips"></div>
+                  <input class="tag-search form-control mt-2" placeholder="Adicionar grupo...">
+                  <div class="suggestion-dropdown"></div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Permissões (diretas)</label>
+                <div class="tag-input-root" data-input-name="user_permissions" data-list-key="permissions">
+                  <div class="tag-chips"></div>
+                  <input class="tag-search form-control mt-2" placeholder="Adicionar permissão...">
+                  <div class="suggestion-dropdown"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Criar Usuário</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Edit User Modals -->
+  {% for user in users %}
+    <div class="modal fade" id="editUserModal-{{ user.id }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'admin_user_edit' user.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Usuário — {{ user.username }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Nome</label>
+                  <input name="first_name" class="form-control" value="{{ user.first_name }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Username</label>
+                  <input name="username" class="form-control" value="{{ user.username }}" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">E-mail</label>
+                  <input name="email" type="email" class="form-control" value="{{ user.email }}">
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Cargo (Funcionário)</label>
+                  <input name="cargo" class="form-control" value="{% if user.funcionario %}{{ user.funcionario.cargo_funcionario }}{% endif %}">
+                </div>
+
+                <div class="col-12">
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" name="create_funcionario" id="create_funcionario_{{ user.id }}" {% if user.funcionario %}checked{% endif %}>
+                    <label class="form-check-label" for="create_funcionario_{{ user.id }}">É Funcionário</label>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Ativo</label>
+                  <div>
+                    <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Staff</label>
+                  <div>
+                    <input type="checkbox" name="is_staff" {% if user.is_staff %}checked{% endif %}>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Grupos</label>
+                  <div class="tag-input-root" data-input-name="groups" data-list-key="groups">
+                    <div class="tag-chips">
+                      {% for g in user.groups.all %}
+                        <span class="chip" data-value="{{ g.id }}">
+                          <span class="chip-label">{{ g.name }}</span>
+                          <button type="button" class="chip-remove">&times;</button>
+                          <input type="hidden" name="groups" value="{{ g.id }}">
+                        </span>
+                      {% endfor %}
+                    </div>
+                    <input class="tag-search form-control mt-2" placeholder="Adicionar grupo...">
+                    <div class="suggestion-dropdown"></div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Permissões (diretas)</label>
+                  <div class="tag-input-root" data-input-name="user_permissions" data-list-key="permissions">
+                    <div class="tag-chips">
+                      {% for p in user.user_permissions.all %}
+                        <span class="chip" data-value="{{ p.id }}">
+                          <span class="chip-label">{{ p.name }}</span>
+                          <button type="button" class="chip-remove">&times;</button>
+                          <input type="hidden" name="user_permissions" value="{{ p.id }}">
+                        </span>
+                      {% endfor %}
+                    </div>
+                    <input class="tag-search form-control mt-2" placeholder="Adicionar permissão...">
+                    <div class="suggestion-dropdown"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<script>
+  (function(){
+    try{
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('create')){
+        const el = document.getElementById('createUserModal');
+        if (el) new bootstrap.Modal(el).show();
+      }
+      if (params.has('edit')){
+        const id = params.get('edit');
+        const el = document.getElementById('editUserModal-' + id);
+        if (el) new bootstrap.Modal(el).show();
+      }
+    }catch(e){console && console.error && console.error(e)}
+  })();
+</script>
+{% endblock %}

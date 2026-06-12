@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+  <h1>Administração</h1>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h5>Usuários</h5>
+        <p class="mb-0">Total: {{ total_users }}</p>
+        <a href="{% url 'admin_users' %}" class="stretched-link"></a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h5>Fornecedores</h5>
+        <p class="mb-0">Total: {{ total_fornecedores }}</p>
+        <a href="{% url 'admin_fornecedores' %}" class="stretched-link"></a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h5>Peças</h5>
+        <p class="mb-0">Total: {{ total_pecas }}</p>
+        <a href="{% url 'admin_pecas' %}" class="stretched-link"></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

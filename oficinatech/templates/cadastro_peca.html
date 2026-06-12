@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container content-wrap">
+        <div class="mb-4 mt-3">
+            <a href="{% url 'estoque' %}" class="text-decoration-none text-primary-custom d-inline-flex align-items-center">
+                <i class="bi bi-arrow-left me-2"></i>Voltar para Estoque
+            </a>
+        </div>
+
+        <h1 class="fs-3 fw-semibold text-dark mb-4">Cadastrar Nova Peça</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="dashboard-card bg-white rounded-3 p-4">
+            <form method="POST" id="formCadastroPeca">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nomePeca" class="form-label fw-medium">Nome da Peça <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control custom-input" id="nomePeca" name="nome_peca" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="custoPeca" class="form-label fw-medium">Custo (R$) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control custom-input" id="custoPeca" name="custo_peca" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descricaoPeca" class="form-label fw-medium">Descrição</label>
+                    <textarea class="form-control custom-input" id="descricaoPeca" name="descricao_peca" rows="3"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="quantPeca" class="form-label fw-medium">Quantidade em Estoque <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control custom-input" id="quantPeca" name="quant_peca" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="alertaQuant" class="form-label fw-medium">Alerta de Quantidade Mínima</label>
+                        <input type="number" class="form-control custom-input" id="alertaQuant" name="alerta_quant" value="5">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="fornecedores" class="form-label fw-medium">Fornecedores</label>
+                    <select class="form-select custom-input" id="fornecedores" name="fornecedores" multiple>
+                        {% for fornecedor in fornecedores %}
+                            <option value="{{ fornecedor.id_fornecedor }}">{{ fornecedor.nome_fornecedor }}</option>
+                        {% empty %}
+                            <option disabled>Nenhum fornecedor cadastrado</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted-custom">Segure Ctrl (ou Cmd) para selecionar múltiplos fornecedores</small>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom px-5 py-2 fw-medium rounded-3">
+                        <i class="bi bi-check-lg me-2"></i>Cadastrar Peça
+                    </button>
+                    <a href="{% url 'estoque' %}" class="btn btn-secondary px-5 py-2 fw-medium rounded-3">
+                        <i class="bi bi-x-lg me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

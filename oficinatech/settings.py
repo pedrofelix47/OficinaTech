@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ay%!5cx!@8y25e#8x1jpqv$aw0)_%h@w7i69s@t(uxmyl5g0_6'
+# Read from environment when available; fallback to existing key for dev convenience.
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-ay%!5cx!@8y25e#8x1jpqv$aw0)_%h@w7i69s@t(uxmyl5g0_6')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Enabled for local development. Set via DJANGO_DEBUG env var in production.
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Configure allowed hosts via env var (comma separated). Defaults to localhost for local use.
+ALLOWED_HOSTS = [h for h in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h]
 
 
 # Application definition
@@ -116,4 +120,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
