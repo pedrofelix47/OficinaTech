@@ -33,11 +33,11 @@
     </tbody>
   </table>
 
-  <!-- Create User Modal -->
   <div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <form method="POST" action="{% url 'admin_user_create' %}">
+          
           {% csrf_token %}
           <div class="modal-header">
             <h5 class="modal-title">Novo Usuário</h5>
@@ -104,7 +104,7 @@
       </div>
     </div>
   </div>
-  <!-- Edit User Modals -->
+  
   {% for user in users %}
     <div class="modal fade" id="editUserModal-{{ user.id }}" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -200,20 +200,34 @@
     </div>
   {% endfor %}
 </div>
+
 <script>
-  (function(){
-    try{
+  document.addEventListener("DOMContentLoaded", function() {
+    try {
       const params = new URLSearchParams(window.location.search);
-      if (params.has('create')){
-        const el = document.getElementById('createUserModal');
-        if (el) new bootstrap.Modal(el).show();
+      
+      // Se houver '?create=1' na URL (redirecionamento de erro de senhas), força o modal a abrir
+      if (params.has('create')) {
+        const createModalEl = document.getElementById('createUserModal');
+        if (createModalEl) {
+          const createModal = new bootstrap.Modal(createModalEl);
+          createModal.show();
+        }
+        alert("Senhas nao batem");
       }
-      if (params.has('edit')){
+      
+      // Se houver '?edit=ID' na URL, força o modal de edição correspondente a abrir
+      if (params.has('edit')) {
         const id = params.get('edit');
-        const el = document.getElementById('editUserModal-' + id);
-        if (el) new bootstrap.Modal(el).show();
+        const editModalEl = document.getElementById('editUserModal-' + id);
+        if (editModalEl) {
+          const editModal = new bootstrap.Modal(editModalEl);
+          editModal.show();
+        }
       }
-    }catch(e){console && console.error && console.error(e)}
-  })();
+    } catch(e) {
+      console && console.error && console.error("Erro ao abrir modal automaticamente:", e);
+    }
+  });
 </script>
 {% endblock %}

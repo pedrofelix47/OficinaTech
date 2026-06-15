@@ -51,48 +51,80 @@ def admin_users(request):
 
 @user_passes_test(is_admin_user)
 def admin_user_create(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # optional: save first name
-            first_name = request.POST.get('first_name')
-            if first_name:
-                user.first_name = first_name
-                user.save()
-            # optional: add groups
-            group_ids = request.POST.getlist('groups')
-            if group_ids:
-                user.groups.set(Group.objects.filter(pk__in=group_ids))
-            # optional: add user permissions
-            perm_ids = request.POST.getlist('user_permissions')
-            if perm_ids:
-                user.user_permissions.set(Permission.objects.filter(pk__in=perm_ids))
-            # optional: create Funcionario record when requested
-            create_func = request.POST.get('create_funcionario')
-            if create_func in ['on', 'true', '1', 'True']:
-                try:
-                    if not hasattr(user, 'funcionario') and not Funcionario.objects.filter(user=user).exists():
-                        Funcionario.objects.create(
-                            user=user,
-                            nome_funcionario=first_name or user.username,
-                            email_funcionario=user.email,
-                            cargo_funcionario=request.POST.get('cargo') or 'Mecânico',
-                            ativo=True
-                        )
-                        # if a 'Funcionario' group exists, add user to it
-                        func_group = Group.objects.filter(name='Funcionario').first()
-                        if func_group:
-                            user.groups.add(func_group)
-                except Exception:
-                    # non-fatal: creation failure should not block user creation
-                    pass
-            messages.success(request, 'Usuário criado com sucesso.')
-            return redirect('admin_users')
-    else:
-        # when GET, redirect to users list and open modal
+    if request.method != 'POST':
         return redirect(reverse('admin_users') + '?create=1')
 
+    form = UserCreationForm(request.POST)
+    
+    if form.is_valid():
+        user = form.save(commit=False)
+        
+        # 1. Salva o Primeiro Nome se enviado
+        first_name = request.POST.get('first_name')
+        if first_name:
+            user.first_name = first_name
+
+        # 2. CORREÇÃO DO E-MAIL: Captura do POST e salva no campo correto do Django ('email')
+        email_do_form = request.POST.get('email_funcionario') or request.POST.get('email')
+        if email_do_form:
+            user.email = email_do_form
+        
+        # Salva o usuário definitivamente no banco (com first_name e email corrigidos)
+        user.save()
+
+        # Adiciona Grupos de forma otimizada
+        group_ids = request.POST.getlist('groups')
+        if group_ids:
+            user.groups.set(Group.objects.filter(pk__in=group_ids))
+
+        # Adiciona Permissões de forma otimizada
+        perm_ids = request.POST.getlist('user_permissions')
+        if perm_ids:
+            user.user_permissions.set(Permission.objects.filter(pk__in=perm_ids))
+
+        # Converte input de checkbox para Booleano
+        create_func = request.POST.get('create_funcionario', '').lower() in ['on', 'true', '1', 'yes']
+        
+        if create_func:
+            try:
+                # O user.email agora tem valor válido e será repassado corretamente aqui
+                funcionario, created = Funcionario.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        'nome_funcionario': first_name or user.username,
+                        'email_funcionario': user.email,  
+                        'cargo_funcionario': request.POST.get('cargo') or 'Mecânico',
+                        'ativo': True
+                    }
+                )
+                
+                if created:
+                    func_group = Group.objects.filter(name='Funcionario').first()
+                    if func_group:
+                        user.groups.add(func_group)
+            except Exception as e:
+                pass
+
+        messages.success(request, 'Usuário criado com sucesso.')
+        return redirect('admin_users')
+
+    else:
+        for error in form.non_field_errors():
+            messages.error(request, error)
+
+        # 2. Captura erros dos campos
+        for field, errors in form.errors.items():
+            if field != '__all__':
+                for error in errors:
+                    field_name = form.fields[field].label or field
+                    messages.error(request, f"Erro no campo '{field_name}': {error}")
+                
+        # --- MODIFICAÇÃO AQUI ---
+        # Em vez de redirect, pegamos os dados necessários para renderizar a página admin_users
+        # (Exemplo: se a página precisa da lista de usuários, você deve buscá-la aqui)
+        usuarios = User.objects.all() 
+        
+        return redirect(reverse('admin_users') + '?create=1')
 
 @user_passes_test(is_admin_user)
 def admin_user_edit(request, user_id):
@@ -337,12 +369,12 @@ def cadastro_view(request):
         # 2. Validações básicas
         if senha != confirmar_senha:
             messages.error(request, "As senhas não coincidem.")
-            return render(request, 'cadastro.html')
+            return render(request, 'index.html')
 
         # Verificar se o e-mail já está a ser utilizado
         if User.objects.filter(email=email).exists():
             messages.error(request, "Este e-mail já está registado no sistema.")
-            return render(request, 'cadastro.html')
+            return render(request, 'index.html')
 
         try:
             # 3. Criar o utilizador padrão do Django (usamos o email como username)
